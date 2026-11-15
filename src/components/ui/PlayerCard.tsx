@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Mic, MicOff, Globe, Send, User, ShieldCheck } from 'lucide-react'
+import { Mic, MicOff, Globe, Send, User, ShieldCheck, CheckCircle2, MessageSquare } from 'lucide-react'
 import type { Profile } from '@/types/database'
 import StarRating from './StarRating'
 import RankBadge from './RankBadge'
@@ -31,10 +31,19 @@ export default function PlayerCard({ player, onInvite, className = '' }: PlayerC
             </div>
 
             <div>
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-1.5 flex-wrap">
                 <span className="text-sm font-bold text-[#F5F5FA] group-hover:text-white transition-colors">
                   {player.username}
                 </span>
+                {player.riot_verified && (
+                  <span
+                    className="inline-flex items-center gap-0.5 text-[9px] font-bold bg-[#36D399]/15 text-[#36D399] px-1.5 py-0.5 rounded border border-[#36D399]/30"
+                    title="Riot Games Tarafından Doğrulandı"
+                  >
+                    <CheckCircle2 size={10} />
+                    <span>Doğrulandı</span>
+                  </span>
+                )}
                 {player.is_admin && (
                   <span title="Platform Yöneticisi">
                     <ShieldCheck size={14} className="text-[#A855F7]" />
@@ -65,8 +74,18 @@ export default function PlayerCard({ player, onInvite, className = '' }: PlayerC
         </div>
 
         {/* Rank & Valorant Tag */}
-        <div className="flex items-center gap-2 mb-3">
+        <div className="flex items-center gap-2 mb-3 flex-wrap">
           <RankBadge rank={rank} size="xs" />
+          {player.riot_verified && (
+            <span className="text-[10px] font-mono text-[#38BDF8] bg-[#38BDF8]/10 px-1.5 py-0.5 rounded border border-[#38BDF8]/20">
+              {player.riot_current_rr ?? 50} RR
+            </span>
+          )}
+          {player.riot_stats?.kd && (
+            <span className="text-[10px] text-[#36D399] bg-[#36D399]/10 px-1.5 py-0.5 rounded border border-[#36D399]/20 font-mono">
+              {player.riot_stats.kd} KD
+            </span>
+          )}
           <span className="text-[11px] text-[#686E80] font-medium">• Valorant</span>
         </div>
 
@@ -136,6 +155,13 @@ export default function PlayerCard({ player, onInvite, className = '' }: PlayerC
           >
             <User size={13} />
             <span>Profili Gör</span>
+          </Link>
+          <Link
+            href={`/mesajlar?userId=${player.id}`}
+            className="btn-secondary text-xs py-2 px-3 justify-center hover:border-[#A855F7]/40"
+            title="Özel Mesaj Gönder"
+          >
+            <MessageSquare size={13} className="text-[#A855F7]" />
           </Link>
           {onInvite && (
             <button

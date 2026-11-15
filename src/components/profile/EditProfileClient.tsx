@@ -30,6 +30,11 @@ export default function EditProfileClient({ initialProfile }: EditProfileClientP
   const supabase = createClient()
 
   const [saving, setSaving] = useState(false)
+  const [verifyingRiot, setVerifyingRiot] = useState(false)
+  const [riotVerified, setRiotVerified] = useState(initialProfile?.riot_verified ?? false)
+  const [riotCurrentRr, setRiotCurrentRr] = useState(initialProfile?.riot_current_rr ?? 0)
+  const [riotPeakRank, setRiotPeakRank] = useState(initialProfile?.riot_peak_rank || '')
+  const [riotStats, setRiotStats] = useState(initialProfile?.riot_stats || null)
 
   // Profile fields
   const [displayName, setDisplayName] = useState(initialProfile?.display_name || '')
@@ -80,6 +85,45 @@ export default function EditProfileClient({ initialProfile }: EditProfileClientP
     }
   }
 
+  const handleVerifyRiot = async () => {
+    if (!riotId.trim() || !riotTag.trim()) {
+      toast.error('Lütfen önce Riot ID ve Etiketinizi (#Tag) girin.')
+      return
+    }
+
+    setVerifyingRiot(true)
+    try {
+      const res = await fetch('/api/riot/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          riotId: riotId.trim(),
+          riotTag: riotTag.trim(),
+          region: serverRegion === 'tr' ? 'eu' : 'eu',
+        }),
+      })
+
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Doğrulama başarısız oldu.')
+
+      const v = data.data
+      setRiotVerified(true)
+      setRank(v.rank)
+      setRiotCurrentRr(v.currentRr)
+      setRiotPeakRank(v.peakRank)
+      setRiotStats(v.stats)
+
+      if (v.stats?.topAgents?.[0]) setPrimaryAgent(v.stats.topAgents[0])
+      if (v.stats?.topAgents?.[1]) setSecondaryAgent(v.stats.topAgents[1])
+
+      toast.success('Riot Games hesabın ve Valorant rankın başarıyla doğrulandı!')
+    } catch (err: any) {
+      toast.error(err.message || 'Riot doğrulaması yapılamadı.')
+    } finally {
+      setVerifyingRiot(false)
+    }
+  }
+
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault()
     setSaving(true)
@@ -111,6 +155,10 @@ export default function EditProfileClient({ initialProfile }: EditProfileClientP
           server_region: serverRegion,
           play_style: playStyle,
           microphone,
+          riot_verified: riotVerified,
+          riot_current_rr: riotCurrentRr,
+          riot_peak_rank: riotPeakRank || null,
+          riot_stats: riotStats,
           privacy_last_seen: privacyLastSeen,
           privacy_show_clips: privacyShowClips,
           privacy_show_skins: privacyShowSkins,
@@ -232,6 +280,50 @@ export default function EditProfileClient({ initialProfile }: EditProfileClientP
                   className="input-game text-xs font-mono"
                 />
               </div>
+            </div>
+
+            {/* RIOT API VERIFICATION BOX */}
+            <div className="bg-[#12141F] border border-[rgba(255,255,255,0.08)] rounded-xl p-3.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+              <div className="flex items-center gap-2.5">
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${riotVerified ? 'bg-[#36D399]/20 text-[#36D399] border border-[#36D399]/30' : 'bg-[#A855F7]/15 text-[#A855F7]'}`}>
+                  <ShieldCheck size={18} />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-bold text-[#F5F5FA]">
+                      {riotVerified ? 'Riot Games Hesabı Doğrulandı' : 'Riot Hesabı Doğrulanmadı'}
+                    </span>
+                    {riotVerified && (
+                      <span className="text-[10px] bg-[#36D399]/20 text-[#36D399] px-2 py-0.5 rounded-full font-bold border border-[#36D399]/30">
+                        ✓ Onaylı Oyuncu
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-[11px] text-[#A1A6B5]">
+                    {riotVerified
+                      ? `RR: ${riotCurrentRr} • Zirve Rank: ${riotPeakRank || rank} • K/D: ${riotStats?.kd ?? 1.15}`
+                      : 'Riot ID ile resmi rankınızı, RR puanınızı ve en çok oynadığınız ajanları otomatik çekin.'}
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleVerifyRiot}
+                disabled={verifyingRiot}
+                className={`btn text-xs px-3.5 py-1.5 shrink-0 ${riotVerified ? 'btn-secondary text-[11px]' : 'btn-primary'}`}
+              >
+                {verifyingRiot ? (
+                  <span className="flex items-center gap-1.5">
+                    <span className="animate-spin">⏳</span>
+                    <span>Sorgulanıyor...</span>
+                  </span>
+                ) : riotVerified ? (
+                  '🔄 Tekrar Senkronize Et'
+                ) : (
+                  '⚡ Riot Hesabımı Doğrula'
+                )}
+              </button>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

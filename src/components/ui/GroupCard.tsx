@@ -171,9 +171,16 @@ export default function GroupCard({ group, className = '' }: GroupCardProps) {
               )}
             </div>
             <div className="min-w-0">
-              <span className="text-xs font-semibold text-[#F5F5FA] truncate block leading-none mb-1">
-                {group.owner?.username}
-              </span>
+              <div className="flex items-center gap-1 mb-1">
+                <span className="text-xs font-semibold text-[#F5F5FA] truncate block leading-none">
+                  {group.owner?.username}
+                </span>
+                {group.owner?.riot_verified && (
+                  <span title="Riot Games Onaylı Lider" className="text-[#36D399] shrink-0">
+                    <ShieldCheck size={11} />
+                  </span>
+                )}
+              </div>
               {ownerReviewCount > 0 ? (
                 <StarRating rating={ownerRating} reviewCount={ownerReviewCount} size="xs" />
               ) : (

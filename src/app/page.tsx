@@ -4,6 +4,7 @@ import GroupCard from '@/components/ui/GroupCard'
 import PlayerCard from '@/components/ui/PlayerCard'
 import HeroVisualMock from '@/components/ui/HeroVisualMock'
 import LiveLobbyList from '@/components/group/LiveLobbyList'
+import QuickMatchTrigger from '@/components/matchmaking/QuickMatchTrigger'
 import { createClient, isSupabaseConfigured } from '@/lib/supabase/server'
 import type { GroupWithDetails, ProfileWithGames } from '@/types/database'
 import { Users, Gamepad2, Award, Shield, ArrowRight, CheckCircle2, Sparkles, Trophy } from 'lucide-react'
@@ -100,16 +101,17 @@ export default async function HomePage() {
 
               {/* CTA Butonları */}
               <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5 pt-2">
+                <QuickMatchTrigger />
                 <Link
                   href="/oyuncular"
-                  className="btn-primary w-full sm:w-auto text-sm py-3 px-7"
+                  className="btn-secondary w-full sm:w-auto text-sm py-3 px-6"
                 >
                   <Users size={17} />
-                  <span>Takım Arkadaşı Bul</span>
+                  <span>Oyuncu Ara</span>
                 </Link>
                 <Link
                   href="/grup/olustur"
-                  className="btn-secondary w-full sm:w-auto text-sm py-3 px-7"
+                  className="btn-secondary w-full sm:w-auto text-sm py-3 px-6 hidden sm:inline-flex"
                 >
                   <Gamepad2 size={17} />
                   <span>Grup Oluştur</span>

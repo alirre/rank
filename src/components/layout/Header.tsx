@@ -7,7 +7,7 @@ import { createClient, isSupabaseConfigured } from '@/lib/supabase/client'
 import type { Profile } from '@/types/database'
 import {
   Bell, Menu, X, ChevronDown, LogOut, User, Settings,
-  Shield, Users, Gamepad2, Plus, Search, Sparkles
+  Shield, Users, Gamepad2, Plus, Search, Sparkles, MessageSquare
 } from 'lucide-react'
 import { getInitials } from '@/lib/utils'
 import Logo from '@/components/ui/Logo'
@@ -78,6 +78,7 @@ export default function Header() {
   const navLinks = [
     { href: '/oyuncular', label: 'Oyuncular' },
     { href: '/gruplar', label: 'Gruplar' },
+    { href: '/mesajlar', label: 'Mesajlar' },
     { href: '/#nasil-calisir', label: 'Nasıl Çalışır?' },
   ]
 
@@ -146,6 +147,15 @@ export default function Header() {
                     <span>Grup Aç</span>
                   </Link>
 
+                  {/* Mesajlar */}
+                  <Link
+                    href="/mesajlar"
+                    className="relative flex items-center justify-center w-9 h-9 rounded-xl bg-[#141722] border border-[rgba(255,255,255,0.08)] text-[#A1A6B5] hover:text-white hover:border-[#A855F7]/40 transition-all"
+                    title="Özel Mesajlar"
+                  >
+                    <MessageSquare size={16} />
+                  </Link>
+
                   {/* Bildirimler */}
                   <Link
                     href="/bildirimler"
@@ -202,6 +212,14 @@ export default function Header() {
                             >
                               <User size={15} />
                               Profilim
+                            </Link>
+                            <Link
+                              href="/mesajlar"
+                              className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[#A1A6B5] hover:text-white hover:bg-[#1E2333] transition-colors"
+                              onClick={() => setUserMenuOpen(false)}
+                            >
+                              <MessageSquare size={15} />
+                              Mesajlarım
                             </Link>
                             <Link
                               href="/basvurular"

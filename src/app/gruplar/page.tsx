@@ -6,6 +6,7 @@ import type { GroupWithDetails } from '@/types/database'
 import { GAMES, VALORANT_RANKS, VALORANT_ROLES, SERVERS, VALORANT_MODES } from '@/lib/constants'
 import { Gamepad2, Filter, Search, Plus, RotateCcw, SlidersHorizontal } from 'lucide-react'
 import Link from 'next/link'
+import QuickMatchTrigger from '@/components/matchmaking/QuickMatchTrigger'
 
 interface GroupsPageProps {
   searchParams: Promise<{
@@ -108,10 +109,13 @@ export default async function GroupsPage({ searchParams }: GroupsPageProps) {
             </p>
           </div>
 
-          <Link href="/grup/olustur" className="btn-primary text-xs py-2.5 px-5 flex-shrink-0">
-            <Plus size={15} />
-            <span>Grup Oluştur</span>
-          </Link>
+          <div className="flex items-center gap-3">
+            <QuickMatchTrigger variant="compact" label="⚡ Hemen Duo Bul" />
+            <Link href="/grup/olustur" className="btn-secondary text-xs py-2.5 px-5 flex-shrink-0">
+              <Plus size={15} />
+              <span>Grup Oluştur</span>
+            </Link>
+          </div>
         </div>
 
         {/* 2 Sütunlu Grid Layout */}

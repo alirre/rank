@@ -44,6 +44,19 @@ export interface Profile {
   privacy_show_clips?: boolean
   privacy_show_skins?: boolean
   usual_hours?: string[] | null
+  riot_verified?: boolean
+  riot_puuid?: string | null
+  riot_current_tier?: number | null
+  riot_current_rr?: number | null
+  riot_peak_rank?: string | null
+  riot_stats?: {
+    kd: number
+    win_rate: number
+    top_agents: string[]
+    matches_analyzed?: number
+  } | null
+  riot_last_updated?: string | null
+  discord_voice_url?: string | null
   created_at: string
   last_seen_at: string | null
 }
@@ -183,3 +196,53 @@ export interface ProfileWithGames extends Profile {
     game?: { id: string; name: string }
   }[]
 }
+
+export interface LobbyMessage {
+  id: string
+  group_id: string
+  sender_id: string
+  message: string
+  message_type: 'user' | 'system' | 'discord_link'
+  created_at: string
+  sender?: Partial<Profile> | null
+}
+
+export interface DirectConversation {
+  id: string
+  user1_id: string
+  user2_id: string
+  last_message: string | null
+  last_message_at: string
+  created_at: string
+  updated_at: string
+  other_user?: Partial<Profile> | null
+}
+
+export interface DirectMessage {
+  id: string
+  conversation_id: string
+  sender_id: string
+  receiver_id: string
+  message: string
+  is_read: boolean
+  created_at: string
+  sender?: Partial<Profile> | null
+}
+
+export interface MatchmakingQueueEntry {
+  id: string
+  user_id: string
+  game_id: string
+  rank_tier: string
+  preferred_role: string | null
+  mic_required: boolean
+  server_region: string
+  play_style: string
+  status: 'searching' | 'matched' | 'cancelled'
+  matched_group_id: string | null
+  matched_user_id: string | null
+  created_at: string
+  updated_at: string
+  user?: Profile
+}
+

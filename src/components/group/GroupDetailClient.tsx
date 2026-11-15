@@ -10,6 +10,7 @@ import RankBadge from '@/components/ui/RankBadge'
 import { timeAgo, copyToClipboard } from '@/lib/utils'
 import { VALORANT_AGENTS, ALL_VALORANT_TIERS, VALORANT_ROLES } from '@/lib/constants'
 import type { GroupWithDetails, GroupApplication, Profile } from '@/types/database'
+import LobbyChat from '@/components/group/LobbyChat'
 import {
   Users, Gamepad2, Mic, MicOff, Globe, Copy, Check,
   Lock, Award, MessageSquare, Trash2, CheckCircle2, XCircle, ArrowRight, ShieldCheck, Sparkles, Send
@@ -453,6 +454,15 @@ export default function GroupDetailClient({
                 ))}
               </div>
             </div>
+
+            {/* LOBİ CANLI SOHBETİ (REAL-TIME GROUP CHAT & DISCORD) */}
+            <LobbyChat
+              groupId={group.id}
+              currentUserId={currentUser?.id}
+              isMember={isMember}
+              isOwner={isOwner}
+              groupTitle={group.title}
+            />
 
             {/* LİDER YÖNETİM PANELİ: GELEN BAŞVURULARI İNCELEME & ONAYLAMA */}
             {isOwner && (
